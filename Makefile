@@ -6,6 +6,7 @@ all:
 	(cd p2swLib; make install)
 	(cd p2sw-demo; make)
 	(cd shape-motion-demo; make)
+	(cd snake; make)
 
 doc:
 	rm -rf doxygen_docs
