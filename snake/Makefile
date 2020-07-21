@@ -1,21 +1,20 @@
-# makefile configuration
-COMMON_OBJECTS  = 
-CPU             = msp430g2553
-CFLAGS          = -mmcu=${CPU} -I../h
-LDFLAGS		= -L/opt/ti/msp430_gcc/include
+# makfile configuration
+CPU             	= msp430g2553
+CFLAGS          	= -mmcu=${CPU} -Os -I../h -I../h
+LDFLAGS	                = -L../lib -L/opt/ti/msp430_gcc/include/
 
 #switch the compiler (for the internal make rules)
 CC              = msp430-elf-gcc
-AS              = msp430-elf-as
+AS              = msp430-elf-gcc -mmcu=${CPU} -c
 
-all: projectmain.elf
+all: snake_game.elf
 
 #additional rules for files
-projectmain.elf: ${COMMON_OBJECTS} p1_interrupt_handler.o led.o switches.o buzzer.o projectmain.o ../lib/libTimer.a
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+snake_game.elf: ${COMMON_OBJECTS} snake_game.o wdt_handler.o buzzer.o
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd -lShape -lCircle -lp2sw
 
-load: projectmain.elf
-	mspdebug rf2500 "prog projectmain.elf"
+load: snake_game.elf
+	mspdebug rf2500 "prog $^"
 
 clean:
 	rm -f *.o *.elf
