@@ -7,13 +7,13 @@ LDFLAGS	                = -L../lib -L/opt/ti/msp430_gcc/include/
 CC              = msp430-elf-gcc
 AS              = msp430-elf-gcc -mmcu=${CPU} -c
 
-all: snake_game.elf
+all: pong_game.elf
 
 #additional rules for files
-snake_game.elf: ${COMMON_OBJECTS} snake_game.o wdt_handler.o buzzer.o
+snake_game.elf: ${COMMON_OBJECTS} pong_game.o wdt_handler.o buzzer.o
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd -lShape -lCircle -lp2sw
 
-load: snake_game.elf
+load: pong_game.elf
 	mspdebug rf2500 "prog $^"
 
 clean:
