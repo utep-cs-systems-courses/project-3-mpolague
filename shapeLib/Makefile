@@ -1,5 +1,5 @@
 all: libShape.a shapedemo.elf shapedemo2.elf shapedemo3.elf
-
+ 
 CPU             = msp430g2553
 CFLAGS          = -mmcu=${CPU} -Os -I../h 
 LDFLAGS		= -L../lib -L/opt/ti/msp430_gcc/include/
