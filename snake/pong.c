@@ -187,7 +187,9 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
       else if((rowH == 20)){
         //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml2->layer->color = COLOR_RED;
-	      //drawChar5x7(52,152, player1Score, COLOR_YELLOW, COLOR_BLACK);
+        score2++; // change char 0 to char 1;
+	      drawChar5x7((screenWidth/2)/2, (screenHeight/2)/+15, score2, COLOR_YELLOW, COLOR_BLACK);
+        goal = 1;
 	      newPos.axes[0] = screenWidth/2;
 	      newPos.axes[1] = (screenHeight/2);
 	      ml->velocity.axes[0] = 5;
@@ -199,13 +201,20 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
       else if((rowH == 136)){
         //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml1->layer->color = COLOR_RED;
-	      //drawChar5x7(120,152, player2Score, COLOR_GREEN, COLOR_BLACK);	   
+        score1++;
+	      drawChar5x7(screenWidth/2,140, score1, COLOR_GREEN, COLOR_BLACK);	   
+        goal = 1;
 	      newPos.axes[0] = screenWidth/2;
 	      newPos.axes[1] = (screenHeight/2);
 	      ml->velocity.axes[0] = 5;
 	      ml->layer->posNext = newPos;
 	      int redrawScreen = 1;
         
+      }
+      int redrawScreen = 1;
+
+      if(goal != 1){
+        ml->layer->posNext = newPos;
       }
       
     } /**< for axis */
