@@ -174,6 +174,7 @@ int keepTrackScore(){
 
   case 3:
     s++;
+    break;
     //this will terminate game
   }
 }
