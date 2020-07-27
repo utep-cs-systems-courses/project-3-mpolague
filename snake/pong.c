@@ -68,6 +68,13 @@ Layer layer1 = {		/**< player 1 */
 };
 
 //BALL STARTS AT THE CENTER OF THE SCREEN
+
+/*
+  layer0:
+    
+
+         jmp layer1;
+ */
 Layer layer0 = {	    
   (AbShape *)&circle14,
   {(screenWidth/2), (screenHeight/2)}, /**< bit below & right of center */
@@ -79,6 +86,11 @@ Layer layer0 = {
 /** Moving Layer
  *  Linked list of layer references
  *  Velocity represents one iteration of change (direction & magnitude)
+ */
+
+/*
+  MovLayer_s:
+             
  */
 typedef struct MovLayer_s {
   Layer *layer;
@@ -131,7 +143,40 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers)
   } // for moving layer being updated
 }	  
 
+//This method was created as a helper to know when to exit the game.
+/*
+  .word default; 
+  keepTrackScore:
+                  cmp #4, &s; s-4 will borrow if s < 4
+                  mov #s, r12
+                  add r12, r12; 2*s
+                  mov jt(r12), r0; jmp to jt[s] <- not sure if needed
+  Case1:
+     add #1, r12; s is in r12
+     jmp esac;
+  Case2:
+     add #1, r12; 
+     jmp esac;
+  Case3:
+     add #1, r12;
+     jmp esac;
+  Esac:
+     pop r0     
+ */
+int keepTrackScore(){
+  switch(s){
+  case 1:
+    s++;
+    break;
+  case 2:
+    s++;
+    break;
 
+  case 3:
+    s++;
+    //this will terminate game
+  }
+}
 
 Region fence = {{0,LONG_EDGE_PIXELS}, {SHORT_EDGE_PIXELS, LONG_EDGE_PIXELS}}; /**< Create a fence region */
 
@@ -152,9 +197,11 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
   Region shapeBoundary;
 
 
-  //gets the row hieght
+  //gets the row height
   int rowH = ml ->layer->posNext.axes[1];
-  //gets the width of player 1
+
+  
+  //gets the width of bottom 1
   int colH = ml->layer->posNext.axes[0];
 
 
