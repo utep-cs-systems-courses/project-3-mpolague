@@ -24,7 +24,29 @@ void buzzer_set_period(short cycles) /* buzzer clock = 2MHz.  (period of 1k resu
   CCR1 = cycles >> 1;		/* one half cycle */
 }
 
+const unsigned short C3 = 15289.35;
+const unsigned short Dd3 = 14431.06;
+const unsigned short D3 = 13621.19;
+const unsigned short Eb3 = 15289.35;
+const unsigned short E3 = 15289.35;
+const unsigned short F3 = 15289.35;
+const unsigned short Gb3 = 15289.35;
+const unsigned short G3 = 15289.35;
+const unsigned short Ab3 = 15289.35;
+const unsigned short A3 = 15289.35;
 
+//array of notes (songs)
+const int song[2] = {C3, Dd3, D3};
+
+void play_song(){
+  for(int i = 0; i < 2; i++){
+    for(int j = 0; j < 25000; j++){
+      buzzer_set_period(song[i]);
+    }
+    buzzer_set_period(0); //turns off buzzer
+    return;
+  }
+}
     
     
   

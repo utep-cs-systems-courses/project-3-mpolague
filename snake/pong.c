@@ -191,7 +191,7 @@ Region fence = {{0,LONG_EDGE_PIXELS}, {SHORT_EDGE_PIXELS, LONG_EDGE_PIXELS}}; /*
  */
 void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 {
-
+  play_song();
   drawString5x7((screenWidth/2)/1.11, (screenHeight+140)/2, "Pong Game!", COLOR_WHITE, COLOR_BLACK);
     
   Vec2 newPos;
@@ -286,16 +286,19 @@ void main()
   lcd_init();
   shapeInit();
   p2sw_init(1);
+  buzzer_init();
  
 
   shapeInit();
 
   layerInit(&layer0);
   layerDraw(&layer0);
+  play_song();
   drawTriangle((screenWidth/2)-60, screenHeight/2, 20, COLOR_ORANGE);
-  
+  //buzzer_init();
+  //play_song();
   layerGetBounds(&fieldLayer, &fieldFence);
-
+  //play_song();
 
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
