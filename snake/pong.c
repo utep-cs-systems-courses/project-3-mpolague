@@ -164,6 +164,7 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers)
      pop r0     
  */
 int keepTrackScore(){
+  int s = 0;
   switch(s){
   case 1:
     s++;
@@ -171,12 +172,12 @@ int keepTrackScore(){
   case 2:
     s++;
     break;
-
   case 3:
     s++;
     break;
     //this will terminate game
   }
+  return 0;
 }
 
 Region fence = {{0,LONG_EDGE_PIXELS}, {SHORT_EDGE_PIXELS, LONG_EDGE_PIXELS}}; /**< Create a fence region */
@@ -291,9 +292,8 @@ void main()
 
   layerInit(&layer0);
   layerDraw(&layer0);
-
-  buzzer_set_period(200); //play music
-
+  drawTriangle((screenWidth/2)-60, screenHeight/2, 20, COLOR_ORANGE);
+  
   layerGetBounds(&fieldLayer, &fieldFence);
 
 
