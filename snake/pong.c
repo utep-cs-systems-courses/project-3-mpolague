@@ -13,11 +13,12 @@
 #include <p2switches.h>
 #include <shape.h>
 #include <abCircle.h>
+#include <buzzer.h>
 
 #define GREEN_LED BIT6
 
 char score1 = '0'; //player 1 score
-char score2 = '0'; // player two score
+char score2 = '0'; // player 2 score
 short goal = 1;
 
 
@@ -38,36 +39,40 @@ Layer fieldLayer = {		/* playing field as a layer */
   0
 };
 
+//THIS IS THE BLACK LINE IN THE MIDDLE OF THE SCREEN
 Layer layer3 = {
   (AbShape *)&middle,
-  {(screenWidth/2), (screenHeight/2)}, /**< bit below & right of center */
+    {(screenWidth/2), (screenHeight/2)}, //line is set horizontally accross the screen
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_RED,
+  COLOR_BLACK, //line is black
   &fieldLayer
 };
-  
 
+
+//THIS IS FOR THE BOTTOM LEFT PAD
 Layer layer2 = {		/**< player 2 */
   (AbShape *)&paddle,
-  {(screenWidth/2), (screenHeight-6)}, //setting to bottom center of screen with 3 pixels from edge
+  {(screenWidth/4), (screenHeight-6)}, //set close to the bottom left of the screen
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_RED,
+  COLOR_GREEN, //line is green
   &layer3,
 };
 
+//THIS IS FOR THE ORANGE PAD ON THE TOP MIDDLE 
 Layer layer1 = {		/**< player 1 */
   (AbShape *)&paddle,
-  {screenWidth/2, (6)}, //3 pixels from top of screen
+  {screenWidth/2, (6)}, 
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_WHITE,
+  COLOR_ORANGE, //pad is orange
   &layer2,
 };
 
-Layer layer0 = {		/**< ball */
+//BALL STARTS AT THE CENTER OF THE SCREEN
+Layer layer0 = {	    
   (AbShape *)&circle14,
   {(screenWidth/2), (screenHeight/2)}, /**< bit below & right of center */
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_ORANGE,
+  COLOR_BLACK, //ball is set to black
   &layer1,
 };
 
@@ -140,8 +145,8 @@ Region fence = {{0,LONG_EDGE_PIXELS}, {SHORT_EDGE_PIXELS, LONG_EDGE_PIXELS}}; /*
 void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 {
 
-  drawString5x7((screenWidth/2)/2, (screenHeight/2)/2, "Player2", COLOR_WHITE, COLOR_BLACK);
-  drawString5x7((screenWidth/2)/2, (screenHeight-75), "Player1", COLOR_WHITE, COLOR_BLACK);
+  drawString5x7((screenWidth/2)/1.11, (screenHeight+140)/2, "Pong Game!", COLOR_WHITE, COLOR_BLACK);
+    
   Vec2 newPos;
   u_char axis;
   Region shapeBoundary;
@@ -160,11 +165,11 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
       if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]) ||
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]) ) {
 	    int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	    newPos.axes[axis] += (2*velocity);
-      buzzer_set_period(0);
+	    newPos.axes[axis] += (2*velocity); //had to put 2 because if I put something smaller, score would update awkwardly, if put something greater, it left pieces of the ball displayed 
+      buzzer_set_period(1);
       }	/**< if outside of fence */
 
-      //checks if ball hits or player one
+      //checks if ball hits player on bottom
       if((rowH >= 135) && (colH <= ml2->layer->posNext.axes[0] + 15 && colH >= ml2->layer->posNext.axes[0] - 15)){
         //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml->layer->color = COLOR_BLACK;
@@ -173,22 +178,27 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
         newPos.axes[axis] += (2 * velocity);
         int redrawScreen = 1;
         
-      }//check if ball hits player 2
+      }
+
+
+      //CHECK IF BALL HITS PLAYER ON TOP
       else if((rowH <= 21) && (colH <= ml1->layer->posNext.axes[0] + 15 && colH >= ml1->layer->posNext.axes[0] - 15)){
-        //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-        ml->layer->color = COLOR_RED;
+        ml->layer->color = COLOR_GREEN;
         int velocity = ml->velocity.axes[axis] = ml->velocity.axes[axis];
         ml->velocity.axes[0] += 1;
         newPos.axes[axis] += (2 * velocity);
-        int redrawScreen = 1;
+        int redrawScreen = 0; //no need to be redrawn
         
       }
+      
       //we check if it hits the upper region
       else if((rowH == 20)){
-        //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml2->layer->color = COLOR_RED;
         score2++; // change char 0 to char 1;
-	      drawChar5x7((screenWidth/2)/2, (screenHeight/2)/+15, score2, COLOR_YELLOW, COLOR_BLACK);
+	drawString5x7((screenWidth/2)/.9, (screenHeight-40/2), "score!", COLOR_WHITE, COLOR_BLACK);
+	
+	drawChar5x7((screenWidth/2)/2, (screenHeight/2)/+15, score2, COLOR_YELLOW, COLOR_BLACK);
+
         goal = 1;
 	      newPos.axes[0] = screenWidth/2;
 	      newPos.axes[1] = (screenHeight/2);
@@ -197,20 +207,7 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 	      int redrawScreen = 1;
         
       }
-      //check if ball hits lower region
-      else if((rowH == 136)){
-        //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-        ml1->layer->color = COLOR_RED;
-        score1++;
-	      drawChar5x7(screenWidth/2,140, score1, COLOR_GREEN, COLOR_BLACK);	   
-        goal = 1;
-	      newPos.axes[0] = screenWidth/2;
-	      newPos.axes[1] = (screenHeight/2);
-	      ml->velocity.axes[0] = 5;
-	      ml->layer->posNext = newPos;
-	      int redrawScreen = 1;
-        
-      }
+
       int redrawScreen = 1;
 
       if(goal != 1){
@@ -223,8 +220,9 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 }
 
 
-u_int bgColor = COLOR_BLUE;     /**< The background color */
-int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
+u_int bgColor = COLOR_WHITE; //color of background is set to white
+//set to true if screen needs to be redrawn 
+int redrawScreen = 1;
 
 Region fieldFence;		/**< fence around playing field  */
 
@@ -234,20 +232,19 @@ Region fieldFence;		/**< fence around playing field  */
  */
 void main()
 {
-   
-  P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
-  P1OUT |= GREEN_LED;
 
   configureClocks();
   lcd_init();
   shapeInit();
   p2sw_init(1);
+ 
 
   shapeInit();
 
   layerInit(&layer0);
   layerDraw(&layer0);
 
+  buzzer_set_period(200); //play music
 
   layerGetBounds(&fieldLayer, &fieldFence);
 
@@ -255,7 +252,15 @@ void main()
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
 
+  P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
+  P1OUT |= GREEN_LED;
 
+  //THIS ENABLES THE LIGHT TO TURN OFF -> CANT MAKE IT WORK ON ITS OWN
+  /*for(;;) { 
+    P1OUT = (1 & p2sw_read());
+    }*/
+
+  
   for(;;) { 
     while (!redrawScreen) { /**< Pause CPU if screen doesn't need updating */
       P1OUT &= ~GREEN_LED;    /**< Green led off witHo CPU */

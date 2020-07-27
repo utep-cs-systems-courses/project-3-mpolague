@@ -51,7 +51,7 @@ void clearScreen(u_int colorBGR)
 /** 5x7 font - this function draws background pixels
  *  Adapted from RobG's EduKit
  */
-void drawChar5x7(u_char rcol, u_char rrow, char c, 
+void drawChar8x12(u_char rcol, u_char rrow, char c, 
      u_int fgColorBGR, u_int bgColorBGR) 
 {
   u_char col = 0;
@@ -62,7 +62,7 @@ void drawChar5x7(u_char rcol, u_char rrow, char c,
   lcd_setArea(rcol, rrow, rcol + 4, rrow + 7); /* relative to requested col/row */
   while (row < 8) {
     while (col < 5) {
-      u_int colorBGR = (font_5x7[oc][col] & bit) ? fgColorBGR : bgColorBGR;
+      u_int colorBGR = (font_8x12[oc][col] & bit) ? fgColorBGR : bgColorBGR;
       lcd_writeColor(colorBGR);
       col++;
     }
@@ -84,12 +84,12 @@ void drawChar5x7(u_char rcol, u_char rrow, char c,
  *  \param fgColorBGR Foreground color in BGR
  *  \param bgColorBGR Background color in BGR
  */
-void drawString5x7(u_char col, u_char row, char *string,
+void drawString8x12(u_char col, u_char row, char *string,
 		u_int fgColorBGR, u_int bgColorBGR)
 {
   u_char cols = col;
   while (*string) {
-    drawChar5x7(cols, row, *string++, fgColorBGR, bgColorBGR);
+    drawChar8x12(cols, row, *string++, fgColorBGR, bgColorBGR);
     cols += 6;
   }
 }

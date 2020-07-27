@@ -2,6 +2,7 @@
 #include <sr.h>
 #include "p2switches.h"
 #define RED_LED BIT0
+#define GREEN_LED BIT1
 
 int
 main()
@@ -10,6 +11,7 @@ main()
   or_sr(0x8);			/* GIE (enable interrupts) */
 
   P1DIR |= RED_LED;
+  P1DIR |= GREEN_LED;
   for(;;) {
     P1OUT = (1 & p2sw_read());
   }
