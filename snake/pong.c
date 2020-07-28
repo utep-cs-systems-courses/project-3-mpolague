@@ -69,13 +69,6 @@ Layer layer1 = {		/**< player 1 */
 };
 
 //BALL STARTS AT THE CENTER OF THE SCREEN
-
-/*
-  layer0:
-    
-
-         jmp layer1;
- */
 Layer layer0 = {	    
   (AbShape *)&circle14,
   {(screenWidth/2), (screenHeight/2)}, /**< bit below & right of center */
@@ -87,11 +80,6 @@ Layer layer0 = {
 /** Moving Layer
  *  Linked list of layer references
  *  Velocity represents one iteration of change (direction & magnitude)
- */
-
-/*
-  MovLayer_s:
-             
  */
 typedef struct MovLayer_s {
   Layer *layer;
@@ -279,8 +267,16 @@ Region fieldFence;		/**< fence around playing field  */
  */
 void main()
 {
-
+  P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
+  P1OUT |= GREEN_LED;
+  
   configureClocks();
+
+  //I attempted to stop the entire program from running by making an infinite loop in which
+  //if no switch was detected it would stay off
+  while(!wdt_c_handler()){
+    P1OUT &= ~GREEN_LED;
+  }
   lcd_init();
   shapeInit();
   p2sw_init(1);
@@ -296,9 +292,6 @@ void main()
 
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
-    
-  P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
-  P1OUT |= GREEN_LED;
   
   for(;;) { 
     while (!redrawScreen) { /**< Pause CPU if screen doesn't need updating */

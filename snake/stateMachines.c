@@ -1,8 +1,12 @@
 #include <msp430.h>
+#include <lcdutils.h>
 #include "stateMachines.h"
 #include "led.h"
 #include "switches.h"
 #include "buzzer.h"
+#include "shape.h"
+#include "libTimer.h"
+#include "lcddraw.h"
 
 int song3[] = {440}; //will play this note
 int song4[] = {247}; //will play this second note
@@ -52,6 +56,7 @@ void _state_advance(){
 void state_advance(){
   switch(switch_state){
   case 1:
+    buzzer_set_period(0);
     buzzer_set_period(song3[i]); //will play first song
     switch_state = 0; //will go back to state 0
     break;
@@ -59,7 +64,7 @@ void state_advance(){
     //_state_advance();
     led_state(0,1); //wanted to turn on green led
     led_state(0,0); //wanted to turn off green led
-    //I was testing this
+    drawTriangle((screenWidth/2)-70, screenHeight/2, 20, COLOR_ORANGE);
     break;
   case 3:
     buzzer_set_period(0); //will turn off the sound completely   
