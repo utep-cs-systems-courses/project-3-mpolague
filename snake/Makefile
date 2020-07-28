@@ -10,7 +10,7 @@ CC              = msp430-elf-gcc
 AS              = msp430-elf-as -mmcu=${CPU} -c
 
 #additional rules for files
-pong.elf: ${COMMON_OBJECTS} pong.o wdt_handler.o buzzer.o
+pong.elf: ${COMMON_OBJECTS} pong.o wdt_handler.o buzzer.o stateMachines.o switches.o led.o
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd -lShape -lCircle -lp2sw
 
 

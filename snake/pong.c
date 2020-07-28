@@ -14,6 +14,7 @@
 #include <shape.h>
 #include <abCircle.h>
 #include <buzzer.h>
+#include "stateMachines.h"
 
 #define GREEN_LED BIT6
 
@@ -284,6 +285,7 @@ void main()
   shapeInit();
   p2sw_init(1);
   buzzer_init();
+  switch_init();
 
   shapeInit();
 
