@@ -36,12 +36,25 @@ const unsigned short Ab3 = 15289.35;
 const unsigned short A3 = 15289.35;
 
 //array of notes (songs)
-const int song[2] = {C3, Dd3, D3};
+const int song[9] = {C3, Dd3, D3, Eb3, E3, F3, Gb3, G3, Ab3};
 
 void play_song(){
-  for(int i = 0; i < 2; i++){
-    for(int j = 0; j < 25000; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 30000; j++){
       buzzer_set_period(song[i]);
+    }
+    buzzer_set_period(0); //turns off buzzer
+    return;
+  }
+}
+
+
+const int song2[14] = {200,200,200,200,200,200,200,200,200,200,200,200,200,200,200};
+
+void play_song2(){
+  for(int i = 0; i < 13; i++){
+    for(int j = 0; j < 30000; j++){
+      buzzer_set_period(song2[i]);
     }
     buzzer_set_period(0); //turns off buzzer
     return;

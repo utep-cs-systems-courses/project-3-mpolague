@@ -191,9 +191,9 @@ Region fence = {{0,LONG_EDGE_PIXELS}, {SHORT_EDGE_PIXELS, LONG_EDGE_PIXELS}}; /*
  */
 void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 {
-  play_song();
-  drawString5x7((screenWidth/2)/1.11, (screenHeight+140)/2, "Pong Game!", COLOR_WHITE, COLOR_BLACK);
-    
+  play_song(); //will play song as the ball is floating around
+  
+
   Vec2 newPos;
   u_char axis;
   Region shapeBoundary;
@@ -214,19 +214,19 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
       if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]) ||
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]) ) {
 	    int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	    newPos.axes[axis] += (2*velocity); //had to put 2 because if I put something smaller, score would update awkwardly, if put something greater, it left pieces of the ball displayed 
-      buzzer_set_period(1);
+	    newPos.axes[axis] += (2*velocity); //had to put 2 because if I put something
+	    //smaller, score would update awkwardly, if put something greater, it left
+	    //pieces of the ball displayed 
+	    
       }	/**< if outside of fence */
 
       //checks if ball hits player on bottom
       if((rowH >= 135) && (colH <= ml2->layer->posNext.axes[0] + 15 && colH >= ml2->layer->posNext.axes[0] - 15)){
-        //int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml->layer->color = COLOR_BLACK;
         int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
         ml->velocity.axes[0] += 1;
         newPos.axes[axis] += (2 * velocity);
         int redrawScreen = 1;
-        
       }
 
 
@@ -236,17 +236,16 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
         int velocity = ml->velocity.axes[axis] = ml->velocity.axes[axis];
         ml->velocity.axes[0] += 1;
         newPos.axes[axis] += (2 * velocity);
-        int redrawScreen = 0; //no need to be redrawn
-        
-      }
+        }
       
       //we check if it hits the upper region
       else if((rowH == 20)){
         ml2->layer->color = COLOR_RED;
-        score2++; // change char 0 to char 1;
-	drawString5x7((screenWidth/2)/.9, (screenHeight-40/2), "score!", COLOR_WHITE, COLOR_BLACK);
+	buzzer_set_period(150);
+        score2++; // increments score if player is hit
+	drawString8x12((screenWidth/2)/2, (screenHeight/2)+50, "score!", COLOR_YELLOW, COLOR_BLACK);
 	
-	drawChar5x7((screenWidth/2)/2, (screenHeight/2)/+15, score2, COLOR_YELLOW, COLOR_BLACK);
+	drawChar8x12((screenWidth/2)/2, (screenHeight/2)/+15, score2, COLOR_YELLOW, COLOR_BLACK);
 
         goal = 1;
 	      newPos.axes[0] = screenWidth/2;
@@ -256,8 +255,6 @@ void mlAdvance(MovLayer *ml, MovLayer *ml1, MovLayer *ml2, Region *fence)
 	      int redrawScreen = 1;
         
       }
-
-      int redrawScreen = 1;
 
       if(goal != 1){
         ml->layer->posNext = newPos;
@@ -287,30 +284,19 @@ void main()
   shapeInit();
   p2sw_init(1);
   buzzer_init();
- 
 
   shapeInit();
 
   layerInit(&layer0);
   layerDraw(&layer0);
-  play_song();
   drawTriangle((screenWidth/2)-60, screenHeight/2, 20, COLOR_ORANGE);
-  //buzzer_init();
-  //play_song();
   layerGetBounds(&fieldLayer, &fieldFence);
-  //play_song();
 
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);	              /**< GIE (enable interrupts) */
-
+    
   P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
   P1OUT |= GREEN_LED;
-
-  //THIS ENABLES THE LIGHT TO TURN OFF -> CANT MAKE IT WORK ON ITS OWN
-  /*for(;;) { 
-    P1OUT = (1 & p2sw_read());
-    }*/
-
   
   for(;;) { 
     while (!redrawScreen) { /**< Pause CPU if screen doesn't need updating */
